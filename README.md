@@ -2,6 +2,8 @@
 
 A local-only toolkit for normalizing Excel data using Python, Marimo notebooks, and DuckDB.
 
+**Now includes Environmental Risk Assessment (ERA) workflow with EPA-standard data formats.**
+
 ## IT Security Notes
 
 This project is designed for **local-only processing** with no network dependencies after initial installation:
@@ -133,6 +135,68 @@ marimo edit notebooks/01_ingest_data.py
 ```bash
 marimo run notebooks/01_ingest_data.py
 ```
+
+---
+
+## Environmental Risk Assessment (ERA) Workflow
+
+This repository includes a complete ERA workflow based on EPA standards.
+
+### ERA Quick Start
+
+```bash
+# Generate sample ERA data (simulated contaminated site)
+python scripts/generate_era_sample_data.py
+
+# Load EPA Regional Screening Levels
+python scripts/generate_era_reference_data.py
+
+# Launch ERA workflow
+marimo edit notebooks/era_01_ingest_edd.py
+```
+
+### ERA Notebooks
+
+| Notebook | Purpose |
+|----------|---------|
+| `era_01_ingest_edd.py` | Import lab EDD data (samples + results) |
+| `era_02_screening.py` | Compare to EPA RSLs, identify COPCs |
+| `era_03_statistics.py` | Calculate UCL95, detection frequency |
+| `era_04_reports.py` | Generate formal ERA summary tables |
+
+### ERA Data Standards
+
+The ERA workflow follows industry standards:
+
+- **EQuIS-compatible schema** for sample and result data
+- **EPA Regional Screening Levels (RSLs)** for comparison
+- **Standard lab qualifiers** (U, J, B, R) handling
+- **Hazard Quotient calculations** for risk screening
+- **UCL95 statistics** per EPA ProUCL guidance
+
+### ERA Schema
+
+```
+dim_locations      → Monitoring wells, soil borings
+dim_analytes       → Chemicals (CAS numbers)
+dim_matrix         → Sample media (soil, groundwater, etc.)
+dim_qualifiers     → Lab qualifier codes
+ref_screening_levels → EPA RSLs for comparison
+fact_samples       → Sample collection metadata
+fact_results       → Analytical results
+```
+
+### ERA Output Tables
+
+The report generator creates standard ERA tables:
+
+1. **Sample Summary** - All samples with locations and dates
+2. **Detection Summary** - Detection frequency by analyte
+3. **Screening Comparison** - Results vs RSLs with HQ
+4. **COPC Summary** - Chemicals of Potential Concern
+5. **Exposure Point Concentrations** - Statistical EPCs
+
+---
 
 ## License
 
