@@ -129,21 +129,85 @@ def main():
 
     conn = duckdb.connect(str(DB_PATH))
 
-    # Read and execute schema
-    schema_path = PROJECT_ROOT / "sql" / "schema" / "era_schema.sql"
-    if schema_path.exists():
-        schema_sql = schema_path.read_text()
-        # Execute each statement separately
-        for statement in schema_sql.split(';'):
-            statement = statement.strip()
-            if statement and not statement.startswith('--'):
-                try:
-                    conn.execute(statement)
-                except Exception as e:
-                    # Ignore errors for views that depend on missing tables
-                    if 'vw_' not in statement[:20]:
-                        print(f"  Warning: {str(e)[:50]}")
-        print(f"  Executed schema: {schema_path.name}")
+    # Create essential tables directly (more reliable than parsing SQL file)
+    print("Creating tables...")
+
+    # Create ref_screening_levels table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS ref_screening_levels (
+            cas_rn VARCHAR PRIMARY KEY,
+            analyte_name VARCHAR,
+            rsl_residential_soil_mg_kg DECIMAL(15,6),
+            rsl_industrial_soil_mg_kg DECIMAL(15,6),
+            rsl_residential_tap_ug_l DECIMAL(15,6),
+            rsl_mcl_ug_l DECIMAL(15,6),
+            eco_ssl_plants_mg_kg DECIMAL(15,6),
+            eco_ssl_soil_inverts_mg_kg DECIMAL(15,6),
+            eco_ssl_avian_mg_kg DECIMAL(15,6),
+            eco_ssl_mammalian_mg_kg DECIMAL(15,6),
+            carcinogen VARCHAR,
+            target_organ VARCHAR,
+            update_date DATE
+        )
+    """)
+    print("  Created: ref_screening_levels")
+
+    # Create dim_analytes table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS dim_analytes (
+            cas_rn VARCHAR PRIMARY KEY,
+            analyte_name VARCHAR NOT NULL,
+            analyte_group VARCHAR,
+            chemical_formula VARCHAR,
+            molecular_weight DECIMAL(10,4)
+        )
+    """)
+    print("  Created: dim_analytes")
+
+    # Create dim_matrix table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS dim_matrix (
+            matrix_code VARCHAR PRIMARY KEY,
+            matrix_name VARCHAR,
+            matrix_description VARCHAR
+        )
+    """)
+
+    # Insert standard matrix codes
+    conn.execute("""
+        INSERT OR REPLACE INTO dim_matrix VALUES
+            ('SO', 'Soil', 'Surface or subsurface soil sample'),
+            ('GW', 'Groundwater', 'Groundwater sample from monitoring well'),
+            ('SE', 'Sediment', 'Stream, lake, or pond sediment'),
+            ('SW', 'Surface Water', 'River, stream, lake, or pond water'),
+            ('AI', 'Air Indoor', 'Indoor air sample'),
+            ('AO', 'Air Outdoor', 'Ambient outdoor air sample'),
+            ('SG', 'Soil Gas', 'Subsurface soil vapor sample'),
+            ('DW', 'Drinking Water', 'Potable water supply sample')
+    """)
+    print("  Created: dim_matrix")
+
+    # Create dim_qualifiers table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS dim_qualifiers (
+            qualifier VARCHAR PRIMARY KEY,
+            qualifier_name VARCHAR,
+            description VARCHAR,
+            use_result BOOLEAN,
+            detection_status VARCHAR
+        )
+    """)
+
+    conn.execute("""
+        INSERT OR REPLACE INTO dim_qualifiers VALUES
+            ('', 'None', 'No qualification - detected result', TRUE, 'Detected'),
+            ('U', 'Non-Detect', 'Analyte not detected above detection limit', TRUE, 'Non-Detect'),
+            ('J', 'Estimated', 'Result is estimated (detected but below quantitation limit)', TRUE, 'Estimated'),
+            ('UJ', 'Est. Non-Detect', 'Detection limit is estimated', TRUE, 'Non-Detect'),
+            ('B', 'Blank Contamination', 'Analyte found in method blank', TRUE, 'Detected'),
+            ('R', 'Rejected', 'Result rejected due to QC failure', FALSE, 'Rejected')
+    """)
+    print("  Created: dim_qualifiers")
 
     # Insert RSL data
     print("\nLoading EPA Regional Screening Levels...")
