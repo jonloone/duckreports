@@ -209,6 +209,70 @@ def main():
     """)
     print("  Created: dim_qualifiers")
 
+    # Create dim_locations table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS dim_locations (
+            location_id VARCHAR PRIMARY KEY,
+            location_name VARCHAR,
+            location_type VARCHAR,
+            latitude DECIMAL(10,6),
+            longitude DECIMAL(10,6),
+            elevation_ft DECIMAL(8,2),
+            total_depth_ft DECIMAL(6,2),
+            screen_top_ft DECIMAL(6,2),
+            screen_bottom_ft DECIMAL(6,2),
+            install_date DATE,
+            status VARCHAR DEFAULT 'Active'
+        )
+    """)
+    print("  Created: dim_locations")
+
+    # Create fact_samples table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS fact_samples (
+            sample_id VARCHAR PRIMARY KEY,
+            location_id VARCHAR,
+            sample_date DATE NOT NULL,
+            sample_time TIME,
+            matrix_code VARCHAR,
+            sample_type VARCHAR DEFAULT 'N',
+            depth_top_ft DECIMAL(6,2),
+            depth_bottom_ft DECIMAL(6,2),
+            sample_method VARCHAR,
+            sampler_name VARCHAR,
+            field_notes TEXT,
+            lab_name VARCHAR,
+            lab_sample_id VARCHAR
+        )
+    """)
+    print("  Created: fact_samples")
+
+    # Create fact_results table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS fact_results (
+            result_id INTEGER PRIMARY KEY,
+            sample_id VARCHAR,
+            cas_rn VARCHAR,
+            result_value DECIMAL(15,6),
+            result_unit VARCHAR NOT NULL,
+            detection_limit DECIMAL(15,6),
+            quantitation_limit DECIMAL(15,6),
+            detect_flag VARCHAR(1) DEFAULT 'Y',
+            lab_qualifier VARCHAR(10),
+            dilution_factor DECIMAL(8,2) DEFAULT 1,
+            analysis_method VARCHAR,
+            analysis_date DATE,
+            prep_method VARCHAR,
+            prep_date DATE,
+            basis VARCHAR DEFAULT 'Wet',
+            percent_moisture DECIMAL(5,2),
+            validation_qualifier VARCHAR(10),
+            validated_by VARCHAR,
+            validation_date DATE
+        )
+    """)
+    print("  Created: fact_results")
+
     # Insert RSL data
     print("\nLoading EPA Regional Screening Levels...")
 

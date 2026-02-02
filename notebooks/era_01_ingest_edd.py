@@ -1,36 +1,34 @@
 import marimo
 
-__generated_with = "0.9.0"
+__generated_with = "0.19.7"
 app = marimo.App(width="medium")
 
 
 @app.cell
-def __():
+def _():
     import marimo as mo
-    return mo,
+    return (mo,)
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        # ERA 01 - Ingest Lab EDD Data
+def _(mo):
+    mo.md(r"""
+    # ERA 01 - Ingest Lab EDD Data
 
-        Import Environmental Data Deliverables (EDD) from Excel into DuckDB.
+    Import Environmental Data Deliverables (EDD) from Excel into DuckDB.
 
-        ## Workflow
-        1. Load site locations
-        2. Import lab sample metadata
-        3. Import analytical results
-        4. Import field measurements
-        5. Validate data quality
-        """
-    )
+    ## Workflow
+    1. Load site locations
+    2. Import lab sample metadata
+    3. Import analytical results
+    4. Import field measurements
+    5. Validate data quality
+    """)
     return
 
 
 @app.cell
-def __():
+def _():
     import duckdb
     from pathlib import Path
     import pandas as pd
@@ -38,7 +36,7 @@ def __():
 
 
 @app.cell
-def __(Path):
+def _(Path):
     # Project paths
     PROJECT_ROOT = Path(__file__).parent.parent
     DATA_RAW = PROJECT_ROOT / "data" / "raw"
@@ -47,11 +45,11 @@ def __(Path):
     DB_PATH = DATA_PROCESSED / "analytics.duckdb"
 
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
-    return DATA_PROCESSED, DATA_RAW, DB_PATH, PROJECT_ROOT, SQL_DIR
+    return DATA_RAW, DB_PATH, SQL_DIR
 
 
 @app.cell
-def __(DB_PATH, SQL_DIR, duckdb):
+def _(DB_PATH, SQL_DIR, duckdb):
     # Connect to DuckDB and initialize schema
     conn = duckdb.connect(str(DB_PATH))
 
@@ -66,11 +64,11 @@ def __(DB_PATH, SQL_DIR, duckdb):
                     conn.execute(statement)
                 except Exception as e:
                     pass  # Views may fail if tables don't exist yet
-    return conn, schema_path, schema_sql, statement
+    return (conn,)
 
 
 @app.cell
-def __(DATA_RAW, mo):
+def _(DATA_RAW, mo):
     # Check for EDD files
     edd_files = {
         "locations": DATA_RAW / "site_locations.xlsx",
@@ -87,17 +85,17 @@ def __(DATA_RAW, mo):
         })
 
     mo.md("## Input Files")
-    return edd_files, file_status, name, path
+    return edd_files, file_status
 
 
 @app.cell
-def __(file_status, mo, pd):
+def _(file_status, mo, pd):
     mo.ui.table(pd.DataFrame(file_status))
     return
 
 
 @app.cell
-def __(edd_files, mo):
+def _(edd_files, mo):
     if not edd_files["lab_results"].exists():
         mo.md("""
         **Missing data files!**
@@ -112,13 +110,15 @@ def __(edd_files, mo):
 
 
 @app.cell
-def __(mo):
-    mo.md("## Load Site Locations")
+def _(mo):
+    mo.md("""
+    ## Load Site Locations
+    """)
     return
 
 
 @app.cell
-def __(conn, edd_files, mo, pd):
+def _(conn, edd_files, mo, pd):
     # Load locations
     if edd_files["locations"].exists():
         locations_df = pd.read_excel(edd_files["locations"])
@@ -148,25 +148,27 @@ def __(conn, edd_files, mo, pd):
     else:
         mo.md("_Location file not found_")
         locations_df = None
-    return loc_count, locations_df, row
-
-
-@app.cell
-def __(conn, mo):
-    # Preview locations
-    loc_preview = conn.execute("SELECT * FROM dim_locations").fetchdf()
-    mo.ui.table(loc_preview)
-    return loc_preview,
-
-
-@app.cell
-def __(mo):
-    mo.md("## Load Lab Results (EDD)")
     return
 
 
 @app.cell
-def __(conn, edd_files, mo, pd):
+def _(conn, mo):
+    # Preview locations
+    loc_preview = conn.execute("SELECT * FROM dim_locations").fetchdf()
+    mo.ui.table(loc_preview)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    ## Load Lab Results (EDD)
+    """)
+    return
+
+
+@app.cell
+def _(conn, edd_files, mo, pd):
     # Load samples sheet
     if edd_files["lab_results"].exists():
         samples_df = pd.read_excel(edd_files["lab_results"], sheet_name="Samples")
@@ -200,11 +202,11 @@ def __(conn, edd_files, mo, pd):
     else:
         samples_df = None
         mo.md("_Lab results file not found_")
-    return row, sample_count, samples_df
+    return
 
 
 @app.cell
-def __(conn, edd_files, mo, pd):
+def _(conn, edd_files, mo, pd):
     # Load results sheet
     if edd_files["lab_results"].exists():
         results_df = pd.read_excel(edd_files["lab_results"], sheet_name="Results")
@@ -251,17 +253,19 @@ def __(conn, edd_files, mo, pd):
         mo.md(f"Loaded **{result_count}** analytical results")
     else:
         results_df = None
-    return cas, name, result_count, result_id, results_df, row
-
-
-@app.cell
-def __(mo):
-    mo.md("## Data Summary")
     return
 
 
 @app.cell
-def __(conn, mo):
+def _(mo):
+    mo.md("""
+    ## Data Summary
+    """)
+    return
+
+
+@app.cell
+def _(conn, mo):
     # Summary statistics
     summary_query = """
     SELECT
@@ -279,17 +283,19 @@ def __(conn, mo):
     """
     summary_df = conn.execute(summary_query).fetchdf()
     mo.ui.table(summary_df)
-    return summary_df, summary_query
-
-
-@app.cell
-def __(mo):
-    mo.md("## Sample Matrix Distribution")
     return
 
 
 @app.cell
-def __(conn, mo):
+def _(mo):
+    mo.md("""
+    ## Sample Matrix Distribution
+    """)
+    return
+
+
+@app.cell
+def _(conn, mo):
     matrix_query = """
     SELECT
         m.matrix_name,
@@ -303,17 +309,19 @@ def __(conn, mo):
     """
     matrix_df = conn.execute(matrix_query).fetchdf()
     mo.ui.table(matrix_df)
-    return matrix_df, matrix_query
-
-
-@app.cell
-def __(mo):
-    mo.md("## Data Quality Check")
     return
 
 
 @app.cell
-def __(conn, mo):
+def _(mo):
+    mo.md("""
+    ## Data Quality Check
+    """)
+    return
+
+
+@app.cell
+def _(conn, mo):
     # Check for data quality issues
     qc_checks = []
 
@@ -347,33 +355,31 @@ def __(conn, mo):
     qc_checks.append({"Check": "Qualified results (J, U, etc.)", "Count": qualified, "Status": "OK"})
 
     mo.md("### Quality Control Summary")
-    return nd_pct, no_rsl, orphan_samples, qc_checks, qualified
+    return (qc_checks,)
 
 
 @app.cell
-def __(mo, pd, qc_checks):
+def _(mo, pd, qc_checks):
     mo.ui.table(pd.DataFrame(qc_checks))
     return
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        ## Lab Qualifier Distribution
+def _(mo):
+    mo.md(r"""
+    ## Lab Qualifier Distribution
 
-        Understanding qualifiers is critical for data usability:
-        - **U** = Non-detect (use detection limit or 1/2 DL for statistics)
-        - **J** = Estimated (use value, flag in reports)
-        - **B** = Found in blank (evaluate for usability)
-        - **R** = Rejected (do not use)
-        """
-    )
+    Understanding qualifiers is critical for data usability:
+    - **U** = Non-detect (use detection limit or 1/2 DL for statistics)
+    - **J** = Estimated (use value, flag in reports)
+    - **B** = Found in blank (evaluate for usability)
+    - **R** = Rejected (do not use)
+    """)
     return
 
 
 @app.cell
-def __(conn, mo):
+def _(conn, mo):
     qualifier_query = """
     SELECT
         COALESCE(NULLIF(r.lab_qualifier, ''), 'None') as qualifier,
@@ -388,22 +394,20 @@ def __(conn, mo):
     """
     qualifier_df = conn.execute(qualifier_query).fetchdf()
     mo.ui.table(qualifier_df)
-    return qualifier_df, qualifier_query
+    return
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        ## Next Steps
+def _(mo):
+    mo.md(r"""
+    ## Next Steps
 
-        Data is now loaded and validated. Continue to:
+    Data is now loaded and validated. Continue to:
 
-        - **era_02_screening.py** - Compare results to EPA screening levels
-        - **era_03_statistics.py** - Calculate UCL95, detection frequency
-        - **era_04_reports.py** - Generate ERA summary tables
-        """
-    )
+    - **era_02_screening.py** - Compare results to EPA screening levels
+    - **era_03_statistics.py** - Calculate UCL95, detection frequency
+    - **era_04_reports.py** - Generate ERA summary tables
+    """)
     return
 
 

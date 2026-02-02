@@ -1,0 +1,271 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.19.7"
+  },
+  "cells": [
+    {
+      "id": "MJUe",
+      "code_hash": "cf13b05d745a057ad2f865b2236c41c1",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"era-01-ingest-lab-edd-data\">ERA 01 - Ingest Lab EDD Data</h1>\n<span class=\"paragraph\">Import Environmental Data Deliverables (EDD) from Excel into DuckDB.</span>\n<h2 id=\"workflow\">Workflow</h2>\n<ol>\n<li>Load site locations</li>\n<li>Import lab sample metadata</li>\n<li>Import analytical results</li>\n<li>Import field measurements</li>\n<li>Validate data quality</li>\n</ol></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "c4355ed08313ea5cb95c69dcbeffa9f4",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"load-site-locations\">Load Site Locations</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "emfo",
+      "code_hash": "c8b40c5b34ffd3894548d1d22b14d663",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"load-lab-results-edd\">Load Lab Results (EDD)</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "iLit",
+      "code_hash": "a5c995d883b2148cbaaf5b992afaa8b2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"data-summary\">Data Summary</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ROlb",
+      "code_hash": "0ace222654e3ccf759273603a8bb57fd",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"sample-matrix-distribution\">Sample Matrix Distribution</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "TqIu",
+      "code_hash": "b464b85e502e6ec4244ce15dc2dd7208",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"data-quality-check\">Data Quality Check</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "ulZA",
+      "code_hash": "2f982fdaefb399d7bc87de863c2383d9",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"lab-qualifier-distribution\">Lab Qualifier Distribution</h2>\n<span class=\"paragraph\">Understanding qualifiers is critical for data usability:</span>\n<ul>\n<li><strong>U</strong> = Non-detect (use detection limit or 1/2 DL for statistics)</li>\n<li><strong>J</strong> = Estimated (use value, flag in reports)</li>\n<li><strong>B</strong> = Found in blank (evaluate for usability)</li>\n<li><strong>R</strong> = Rejected (do not use)</li>\n</ul></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Pvdt",
+      "code_hash": "6b24940958cbe50ae885aa6c6e928538",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"next-steps\">Next Steps</h2>\n<span class=\"paragraph\">Data is now loaded and validated. Continue to:</span>\n<ul>\n<li><strong>era_02_screening.py</strong> - Compare results to EPA screening levels</li>\n<li><strong>era_03_statistics.py</strong> - Calculate UCL95, detection frequency</li>\n<li><strong>era_04_reports.py</strong> - Generate ERA summary tables</li>\n</ul></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hbol",
+      "code_hash": "1d0db38904205bec4d6f6f6a1f6cec3e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "0b8b424c78e7d8bc246bf685b9c4634a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "53992a9a24f5d09cd020fcd6b3818e31",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "b61bd6b2ca2a4bf8424a562c5b83fc7e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "6baf3ad89d507d09006c14d851e74e5d",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"input-files\">Input Files</h2></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "06d9c53a5f6ab781c78ce0ed15babce8",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='Xref-0' random-id='b062001d-fb80-17d2-2019-5a0ab7c5ae0b'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;[{&#92;&quot;_marimo_row_id&#92;&quot;:0,&#92;&quot;File&#92;&quot;:&#92;&quot;locations&#92;&quot;,&#92;&quot;Path&#92;&quot;:&#92;&quot;site_locations.xlsx&#92;&quot;,&#92;&quot;Exists&#92;&quot;:&#92;&quot;Yes&#92;&quot;},{&#92;&quot;_marimo_row_id&#92;&quot;:1,&#92;&quot;File&#92;&quot;:&#92;&quot;lab_results&#92;&quot;,&#92;&quot;Path&#92;&quot;:&#92;&quot;lab_results_edd.xlsx&#92;&quot;,&#92;&quot;Exists&#92;&quot;:&#92;&quot;Yes&#92;&quot;},{&#92;&quot;_marimo_row_id&#92;&quot;:2,&#92;&quot;File&#92;&quot;:&#92;&quot;field_measurements&#92;&quot;,&#92;&quot;Path&#92;&quot;:&#92;&quot;field_measurements.xlsx&#92;&quot;,&#92;&quot;Exists&#92;&quot;:&#92;&quot;Yes&#92;&quot;}]&quot;' data-total-rows='3' data-total-columns='3' data-max-columns='50' data-banner-text='&quot;&quot;' data-pagination='false' data-page-size='10' data-field-types='[[&quot;File&quot;,[&quot;string&quot;,&quot;object&quot;]],[&quot;Path&quot;,[&quot;string&quot;,&quot;object&quot;]],[&quot;Exists&quot;,[&quot;string&quot;,&quot;object&quot;]]]' data-selection='&quot;multi&quot;' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-show-data-types='true' data-show-page-size-selector='false' data-show-column-explorer='true' data-show-chart-builder='true' data-row-headers='[]' data-has-stable-row-id='true' data-lazy='false' data-preload='false'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "5a5d48dbfb34e22502cc02108c2b3a54",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "0afe593d2b027433eb3bd29135fadc31",
+      "outputs": [
+        {
+          "type": "error",
+          "ename": "sql-error",
+          "evalue": "Catalog Error: Table with name dim_locations does not exist!\nDid you mean \"dim_matrix\"?\n\nLINE 1: DELETE FROM dim_locations\n                    ^",
+          "traceback": []
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Kclp",
+      "code_hash": "8991c4e62c712a9120993bb408e30c07",
+      "outputs": [
+        {
+          "type": "error",
+          "ename": "sql-error",
+          "evalue": "Catalog Error: Table with name dim_locations does not exist!\nDid you mean \"dim_matrix\"?\n\nLINE 1: SELECT * FROM dim_locations\n                      ^",
+          "traceback": []
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hstk",
+      "code_hash": "d314d62a773eb858d7fc03f70a0e0e26",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "nWHF",
+      "code_hash": "cb5e0c2b3f717af3bced357c277de65e",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "ZHCJ",
+      "code_hash": "240dc278fc99b79fee62004c2ea649be",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "qnkX",
+      "code_hash": "7973b3d2cfeb33bbaec4a1f514ae92b1",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "Vxnm",
+      "code_hash": "f5a4cd5734b75e1cb953fe8bc22afda4",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "DnEU",
+      "code_hash": "4426be425f589b492fac8f037f9c0d78",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "ecfG",
+      "code_hash": "eef3ad7d930a669da3b0d50e256be40f",
+      "outputs": [],
+      "console": []
+    }
+  ]
+}
